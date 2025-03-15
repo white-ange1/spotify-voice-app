@@ -194,38 +194,32 @@ def initialize_tokens():
 
 @app.route("/callback")
 def callback():
-    print(f"Received callback request: {request.url}")  # Debugging step
     code = request.args.get("code")
     if not code:
-        return f"Error: Missing code from Spotify. Full URL received: {request.url}", 400
-    return f"code received successfully: {code}"
+        return "Error: Missing code from Spotify.", 400
 
-    try:
-        url = "https://accounts.spotify.com/api/token"
-        auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
-        headers = {
-            "Authorization": f"Basic {auth_header}",
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
-        data = {
-            "grant_type": "authorization_code",
-            "code": code,
-            "redirect_uri": REDIRECT_URI,
-        }
+    url = "https://accounts.spotify.com/api/token"
+    auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
+    headers = {
+        "Authorization": f"Basic {auth_header}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+    }
 
-        response = requests.post(url, headers=headers, data=data)
-        print(f"Spotify token response: {response.status_code} - {response.text}")  # Debugging step
+    response = requests.post(url, headers=headers, data=data)
+    print(f"Spotify token response: {response.status_code} - {response.text}")  # Debugging step
 
-        if response.status_code == 200:
-            token_info = response.json()
-            save_tokens(token_info["access_token"], token_info.get("refresh_token"), token_info["expires_in"])
-            return redirect("/voice")  # Redirect to voice control UI
-        else:
-            return f"Error: Failed to get token ({response.status_code}) - {response.text}", 400
+    if response.status_code == 200:
+        token_info = response.json()
+        save_tokens(token_info["access_token"], token_info.get("refresh_token"), token_info["expires_in"])
+        return redirect("/voice")  # Redirect to voice control UI
 
-    except Exception as e:
-        print(f"Error in callback: {e}")
-        return f"Error: {str(e)}", 400
+    return f"Error: Failed to get token ({response.status_code}) - {response.text}", 400
+
 
 
 # Spotify Control Routes (play,pause,next,previous)
