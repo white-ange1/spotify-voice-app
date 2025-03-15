@@ -180,32 +180,33 @@ def home():
     return redirect(get_auth_url())
 # This route redirects to the Spotify authorization URL
 
+# At the beginning of your app, load tokens if they exist
+def initialize_tokens():
+    global access_token, refresh_token, token_expires_in, token_acquired_at
+    token_data = load_tokens()
+    if token_data:
+        access_token = token_data.get("access_token")
+        refresh_token = token_data.get("refresh_token")
+        token_expires_in = token_data.get("expires_at") - current_time() if token_data.get("expires_at") else 0
+        token_acquired_at = current_time() - (3600 - token_expires_in) if token_expires_in else 0
+        return True
+    return False
+
+# Replace your callback route with this:
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
     if not code:
         return "Error: Missing code from Spotify", 400
-
-    response = requests.post("https://accounts.spotify.com/api/token", 
-        headers={
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        data={    
-            "grant_type": "authorization_code",
-            "code": code,
-            "redirect_uri": REDIRECT_URI,
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-        }
-    )
-
-    if response.status_code == 200:
-        token_info = response.json()
+    
+    # Use your existing get_tokens function
+    token_info = get_tokens(code)
+    
+    if token_info and "access_token" in token_info:
+        # Save tokens to file
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
-        return "✅ Spotify connected!"
-        return redirect("/voice")
+        return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
     return "Error: Failed to get token", 400
-# This callback route handles the Spotify authorization flow correctly
 
 # Spotify Control Routes (play,pause,next,previous)
 @app.route('/<command>', methods=['GET'])
@@ -221,9 +222,14 @@ def handle_command(command):
 # Voice Control Routes
 @app.route('/voice')
 def voice_interface():
-    return render_template('index.html')
-# This route renders the voice control interface
+    # Check if we have a valid token or can refresh one
+    if refresh_access_token():
+        return render_template('index.html')
+    else:
+        # Redirect to auth flow if not authenticated
+        return redirect("/")
 
+# This route renders the voice control interface 
 @app.route('/voice_control', methods=['OPTIONS', 'POST'])
 def voice_control():
     if request.method == 'OPTIONS':
@@ -276,6 +282,7 @@ def log_response_info(response):
 
 if __name__ == "__main__":
     print("🚀 Starting Spotify Voice Control App")
+    initialize_tokens()
     print("Visit: http://localhost:8080 to authenticate with Spotify")
     print("Visit: http://localhost:8080/voice for voice control interface")
     
