@@ -194,12 +194,12 @@ def initialize_tokens():
 
 @app.route("/callback")
 def callback():
+    print(f"Received callback request: {request.args}")  # Debugging step
     code = request.args.get("code")
     if not code:
-        return "Error: Missing code from Spotify. Please start from the home page.", 400
+        return "Error: Missing code from Spotify. Try logging in again.", 400
 
     try:
-        # Exchange auth code for tokens
         url = "https://accounts.spotify.com/api/token"
         auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
         headers = {
@@ -213,16 +213,19 @@ def callback():
         }
 
         response = requests.post(url, headers=headers, data=data)
-        response.raise_for_status()  # Will raise exception for 4XX/5XX responses
-        
-        token_info = response.json()
-        save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
-        
-        return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
-    
+        print(f"Spotify token response: {response.status_code} - {response.text}")  # Debugging step
+
+        if response.status_code == 200:
+            token_info = response.json()
+            save_tokens(token_info["access_token"], token_info.get("refresh_token"), token_info["expires_in"])
+            return redirect("/voice")  # Redirect to voice control UI
+        else:
+            return f"Error: Failed to get token ({response.status_code}) - {response.text}", 400
+
     except Exception as e:
         print(f"Error in callback: {e}")
-        return f"Error: Failed to get token: {str(e)}", 400
+        return f"Error: {str(e)}", 400
+
 
 # Spotify Control Routes (play,pause,next,previous)
 @app.route('/<command>', methods=['GET'])
