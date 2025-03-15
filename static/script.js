@@ -28,14 +28,14 @@ if (!SpeechRecognition) {
         mic_status.textContent = '🗣 Your Command: "${command}"';
 
         // Send recognized command to Flask backend
-        fetch("http://192.168.1.71:5050/voice_control", {
+        fetch("/voice_control", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({command}),
         })
         .then((response) => {
             if (!response.ok) {
-                throw new Error('HTTP error! Status: ${response.status}');
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
