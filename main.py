@@ -5,6 +5,7 @@ import requests
 from flask import Flask, request, redirect, jsonify
 from dotenv import load_dotenv
 import json
+import multiprocessing
 
 # Load environment variables
 load_dotenv()
@@ -21,6 +22,11 @@ access_token = None
 refresh_token = None
 token_expires_in = 0
 token_acquired_at = 0
+
+# Run speech control in background
+def run_speech_control():
+    from speech_control import app as speech_app
+    speech_app.run(host='0.0.0.0', port=5050, debug=True)
 
 # Helper: Get current time
 def current_time():
@@ -121,23 +127,33 @@ def refresh_access_token():
     print("test 2 done")
 
 # Helper: Send request to Spotify API
-def spotify_request(method, endpoint):
+def spotify_request(command):
     global access_token
     access_token = refresh_access_token()
 
     if not access_token:
-        print("NO access token available.")
-        return None
+        return jsonify({"error": "Authorization required. Please log in at /"}), 401
     
-    url = f"https://api.spotify.com/v1/me/player/{endpoint}"
     headers = {"Authorization": f"Bearer {access_token}"}
-    response = requests.request(method, url, headers=headers)
-    return response
+    actions = {
+        "play": "play",
+        "pause": "pause",
+        "next": "next",
+        "previous": "previous",
+    }
+
+    if command not in actions:
+        return jsonify({"error": "Invalid action."}), 400
+
+    url = f"https://api.spotify.com/v1/me/player/{actions[command]}"
+    response = requests.put(url, headers=headers)
+    
+    return jsonify({"status": "success", "command": command}) if response.status_code in (200,204) else f"❌ Error: {response.reason}"
 
 # force refresh on first use
 if not access_token:
     refresh_access_token()   
-    
+"""    
 # Step 4: Spotify Playback Control
 @app.route("/play")
 def play_song():
@@ -158,7 +174,7 @@ def next_track():
 def previous_track():
     response = spotify_request("POST", "previous")
     return "⏮️ Previous track!" if response.status_code in (200,204) else f"❌ Error: {response.reason}"
-
+"""
 # Flask Routes: Authorization Flow
 @app.route("/")
 def home():
@@ -182,8 +198,19 @@ def callback():
         token_info = response.json()
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
         return "✅ Spotify connected!"
+        return redirect("http://localhost:8080/")
     return "Error: Failed to get token", 400
+
+# Spotify Control Routes (play,pause,next,previous)
+@app.route('/<command>', methods=['GET'])
+def handle_command(command):
+    return spotify_request(command)
 
 if __name__ == "__main__":
     print("🚀 Visit: http://localhost:8080")
+
+    speech_process = multiprocessing.Process(target=run_speech_control)
+    speech_process.start()
+    time.sleep(1)
+
     app.run(host="0.0.0.0",port=8080, debug=True)
