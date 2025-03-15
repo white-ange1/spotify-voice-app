@@ -192,21 +192,37 @@ def initialize_tokens():
         return True
     return False
 
-# Replace your callback route with this:
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
     if not code:
-        return "Error: Missing code from Spotify", 400
-    
-    # Use your existing get_tokens function
-    token_info = get_tokens(code)
-    
-    if token_info and "access_token" in token_info:
-        # Save tokens to file
+        return "Error: Missing code from Spotify. Please start from the home page.", 400
+
+    try:
+        # Exchange auth code for tokens
+        url = "https://accounts.spotify.com/api/token"
+        auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        data = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": REDIRECT_URI,
+        }
+
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()  # Will raise exception for 4XX/5XX responses
+        
+        token_info = response.json()
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
+        
         return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
-    return "Error: Failed to get token", 400
+    
+    except Exception as e:
+        print(f"Error in callback: {e}")
+        return f"Error: Failed to get token: {str(e)}", 400
 
 # Spotify Control Routes (play,pause,next,previous)
 @app.route('/<command>', methods=['GET'])
