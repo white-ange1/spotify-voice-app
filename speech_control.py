@@ -3,7 +3,7 @@ import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origin": "*", "allow_header": ["Content-Type"], "method": ["GET", "POST", "OPTIONS"]}})
 
 # Spotify Flask app URL (assuming running on same machine)
 SPOTIFY_API_URL = "http://localhost:8080"

@@ -136,17 +136,22 @@ def spotify_request(command):
     
     headers = {"Authorization": f"Bearer {access_token}"}
     actions = {
-        "play": "play",
-        "pause": "pause",
-        "next": "next",
-        "previous": "previous",
+        "play": {"method": "PUT", "endpoint": "play"},
+        "pause": {"method": "PUT", "endpoint": "pause"},
+        "next": {"method": "POST", "endpoint": "next"},
+        "previous": {"method": "POST", "endpoint": "previous"},
     }
 
     if command not in actions:
         return jsonify({"error": "Invalid action."}), 400
 
-    url = f"https://api.spotify.com/v1/me/player/{actions[command]}"
-    response = requests.put(url, headers=headers)
+    action = actions[command]
+    url = f"https://api.spotify.com/v1/me/player/{action['endpoint']}"
+
+    if action['method'] == "PUT":
+        response = requests.put(url, headers=headers)
+    elif action['method'] == "POST":
+        response = requests.post(url, headers=headers)    
     
     return jsonify({"status": "success", "command": command}) if response.status_code in (200,204) else f"❌ Error: {response.reason}"
 
