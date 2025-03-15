@@ -11,8 +11,8 @@ from dotenv import load_dotenv  # Make sure python-dotenv is installed
 load_dotenv()
 
 app = Flask(__name__, 
-           static_folder='another_folder/static',  # Update this to your actual folder name
-           template_folder='another_folder')      # Update this to your actual folder name
+           static_folder='static',  # Update this to your actual folder name
+           template_folder='templates')      # Update this to your actual folder name
 
 CORS(app, resources={r"/*": {"origins": "*", "allow_headers": ["Content-Type"], "methods": ["GET", "POST", "OPTIONS"]}})
 
@@ -186,18 +186,24 @@ def callback():
     if not code:
         return "Error: Missing code from Spotify", 400
 
-    response = requests.post("https://accounts.spotify.com/api/token", {
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": REDIRECT_URI,
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-    })
+    response = requests.post("https://accounts.spotify.com/api/token", 
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        data={    
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": REDIRECT_URI,
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+        }
+    )
 
     if response.status_code == 200:
         token_info = response.json()
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
-        return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
+        return "✅ Spotify connected!"
+        return redirect("/voice")
     return "Error: Failed to get token", 400
 # This callback route handles the Spotify authorization flow correctly
 
