@@ -2,15 +2,17 @@ import os
 import time
 import base64
 import requests
-from flask import Flask, request, redirect, jsonify
-from dotenv import load_dotenv
 import json
 import multiprocessing
+from flask import Flask, request, redirect, jsonify, render_template
+from flask_cors import CORS
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*", "allow_headers": ["Content-Type"], "methods": ["GET", "POST", "OPTIONS"]}})
 
 # Spotify API Credentials
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -22,11 +24,6 @@ access_token = None
 refresh_token = None
 token_expires_in = 0
 token_acquired_at = 0
-
-# Run speech control in background
-def run_speech_control():
-    from speech_control import app as speech_app
-    speech_app.run(host='0.0.0.0', port=5050, debug=True)
 
 # Helper: Get current time
 def current_time():
@@ -124,7 +121,6 @@ def refresh_access_token():
     else:
         print("❌ Failed to refresh token. Please log in again.")
         return None
-    print("test 2 done")
 
 # Helper: Send request to Spotify API
 def spotify_request(command):
@@ -133,48 +129,40 @@ def spotify_request(command):
 
     if not access_token:
         return jsonify({"error": "Authorization required. Please log in at /"}), 401
-    
+
     headers = {"Authorization": f"Bearer {access_token}"}
+    
+    # Define proper HTTP methods for each command
     actions = {
-        "play": "play",
-        "pause": "pause",
-        "next": "next",
-        "previous": "previous",
+        "play": {"method": "PUT", "endpoint": "play"},
+        "pause": {"method": "PUT", "endpoint": "pause"},
+        "next": {"method": "POST", "endpoint": "next"},
+        "previous": {"method": "POST", "endpoint": "previous"},
     }
 
     if command not in actions:
         return jsonify({"error": "Invalid action."}), 400
 
-    url = f"https://api.spotify.com/v1/me/player/{actions[command]}"
-    response = requests.put(url, headers=headers)
+    action = actions[command]
+    url = f"https://api.spotify.com/v1/me/player/{action['endpoint']}"
     
-    return jsonify({"status": "success", "command": command}) if response.status_code in (200,204) else f"❌ Error: {response.reason}"
+    try:
+        if action['method'] == "PUT":
+            response = requests.put(url, headers=headers)
+        else:  # POST
+            response = requests.post(url, headers=headers)
+        
+        if response.status_code in (200, 204):
+            return jsonify({"status": "success", "command": command})
+        else:
+            return jsonify({"error": response.reason}), response.status_code
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
 # force refresh on first use
 if not access_token:
-    refresh_access_token()   
-"""    
-# Step 4: Spotify Playback Control
-@app.route("/play")
-def play_song():
-    response = spotify_request("PUT", "play")
-    return "▶️ Playing!" if response.status_code in (200,204) else f"❌ Error: {response.reason}"
+    refresh_access_token()
 
-@app.route("/pause")
-def pause_song():
-    response = spotify_request("PUT", "pause")
-    return "⏸️ Paused!" if response.status_code in (200,204) else f"❌ Error: {response.reason}"
-
-@app.route("/next")
-def next_track():
-    response = spotify_request("POST", "next")
-    return "⏭️ Next track!" if response.status_code in (200,204) else f"❌ Error: {response.reason}"
-
-@app.route("/previous")
-def previous_track():
-    response = spotify_request("POST", "previous")
-    return "⏮️ Previous track!" if response.status_code in (200,204) else f"❌ Error: {response.reason}"
-"""
 # Flask Routes: Authorization Flow
 @app.route("/")
 def home():
@@ -185,7 +173,7 @@ def callback():
     code = request.args.get("code")
     if not code:
         return "Error: Missing code from Spotify", 400
-    
+
     response = requests.post("https://accounts.spotify.com/api/token", {
         "grant_type": "authorization_code",
         "code": code,
@@ -197,8 +185,7 @@ def callback():
     if response.status_code == 200:
         token_info = response.json()
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
-        return "✅ Spotify connected!"
-        return redirect("http://localhost:8080/")
+        return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
     return "Error: Failed to get token", 400
 
 # Spotify Control Routes (play,pause,next,previous)
@@ -206,11 +193,63 @@ def callback():
 def handle_command(command):
     return spotify_request(command)
 
+# Voice Control Routes
+@app.route('/voice')
+def voice_interface():
+    return render_template('index.html')
+
+@app.route('/voice_control', methods=['OPTIONS', 'POST'])
+def voice_control():
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'success'})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
+
+    try:
+        command = request.json.get('command', '').lower()
+        print(f"🎤 Received command: {command}")
+
+        SPOTIFY_ACTIONS = {
+            "play": "play",
+            "pause": "pause",
+            "next": "next",
+            "previous": "previous"
+        }
+
+        # Map commands to Spotify API endpoints
+        for keyword, action in SPOTIFY_ACTIONS.items():
+            if keyword in command:
+                try:
+                    result = spotify_request(action)
+                    # Check if result is a tuple (response, status_code)
+                    if isinstance(result, tuple):
+                        return result
+                    return result
+                except Exception as e:
+                    print(f"Error executing command: {e}")
+                    return jsonify({"status": "error", "message": str(e)}), 500
+        
+        # If no command was matched
+        return jsonify({"status": "error", "message": "Unknown command"}), 400
+    
+    except Exception as e:
+        print(f"Exception in voice_control: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# Debug helper to log responses
+@app.after_request
+def log_response_info(response):
+    print(f"Response Status: {response.status}")
+    print(f"Response Headers: {response.headers}")
+    # Only log JSON responses to avoid logging binary data
+    if response.headers.get('Content-Type') == 'application/json':
+        print(f"Response Body: {response.get_data(as_text=True)}")
+    return response
+
 if __name__ == "__main__":
-    print("🚀 Visit: http://localhost:8080")
-
-    speech_process = multiprocessing.Process(target=run_speech_control)
-    speech_process.start()
-    time.sleep(1)
-
-    app.run(host="0.0.0.0",port=8080, debug=True)
+    print("🚀 Starting Spotify Voice Control App")
+    print("Visit: http://localhost:8080 to authenticate with Spotify")
+    print("Visit: http://localhost:8080/voice for voice control interface")
+    
+    app.run(host="0.0.0.0", port=8080, debug=True)
