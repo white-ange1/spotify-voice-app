@@ -227,6 +227,7 @@ def callback():
 # Spotify Control Routes (play,pause,next,previous)
 @app.route('/<command>', methods=['GET'])
 def handle_command(command):
+    print(f"DEBUG COMMAND CALLED: {command}")
     if command in ["play", "pause", "next", "previous"]:
         return spotify_request(command)
     elif command == "voice":
