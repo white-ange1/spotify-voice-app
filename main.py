@@ -109,7 +109,7 @@ def refresh_access_token():
     if response.status_code == 200:
         new_tokens = response.json()
         token_data["access_token"] = new_tokens["access_token"]
-        token_data["expires_at"] = int(time.time()) + new_tokens["expires_in"]
+        token_data["expires_at"] = int(time.time()) + new_tokens["expires_in"] 
 
         # Save new refresh token if provided
         if "refresh_token" in new_tokens:
@@ -175,6 +175,7 @@ def callback():
         token_info = response.json()
         save_tokens(token_info["access_token"], token_info["refresh_token"], token_info["expires_in"])
         return "✅ Spotify connected! <a href='/voice'>Go to Voice Control</a>"
+        return redirect("http://localhost:8080/voice")
     return "Error: Failed to get token", 400
 
 # Spotify Control Routes (play,pause,next,previous)
