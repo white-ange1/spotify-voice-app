@@ -194,10 +194,11 @@ def initialize_tokens():
 
 @app.route("/callback")
 def callback():
-    print(f"Received callback request: {request.args}")  # Debugging step
+    print(f"Received callback request: {request.url}")  # Debugging step
     code = request.args.get("code")
     if not code:
-        return "Error: Missing code from Spotify. Try logging in again.", 400
+        return f"Error: Missing code from Spotify. Full URL received: {request.url}", 400
+    return f"code received successfully: {code}"
 
     try:
         url = "https://accounts.spotify.com/api/token"
