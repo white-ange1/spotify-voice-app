@@ -25,7 +25,7 @@ if (!SpeechRecognition) {
     recognition.onresult = (event) => {
         const command = event.results[0][0].transcript.toLowerCase();
         console.log("Recognized Command:", command);
-        mic_status.textContent = '🗣 Your Command: "${command}"';
+        mic_status.textContent = `🗣 Your Command: "${command}"`;
 
         // Send recognized command to Flask backend
         fetch("/voice_control", {
