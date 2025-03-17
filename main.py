@@ -12,7 +12,7 @@ load_dotenv()
 
 app = Flask(__name__, 
            static_folder='static',  # Update this to your actual folder name
-           template_folder='templates')      # Update this to your actual folder name
+           template_folder='static/templates')      # Update this to your actual folder name
 
 CORS(app, resources={r"/*": {"origins": "*", "allow_headers": ["Content-Type"], "methods": ["GET", "POST", "OPTIONS"]}})
 
