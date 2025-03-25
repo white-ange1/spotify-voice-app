@@ -37,7 +37,7 @@
             backdrop-filter: blur(10px); /* Glassmorphism effect */
             border-radius: 16px;
             padding: 40px;
-            max-width: 400px;
+            max-width: 400px; /* Default for mobile */
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 255, 149, 0.2), 0 0 20px rgba(0, 255, 149, 0.1); /* Enhanced glow */
             border: 1px solid rgba(0, 255, 149, 0.3);
@@ -161,10 +161,85 @@
             font-weight: 600;
         }
 
-        /* Mobile responsiveness */
+        /* Responsive adjustments for tablets (768px and above) */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px; /* Wider container for tablets */
+                padding: 50px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            #startListening {
+                font-size: 1.4rem;
+                padding: 16px 32px;
+                max-width: 400px; /* Prevent button from stretching too wide */
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #mic_status {
+                font-size: 1.2rem;
+            }
+
+            .command_list h3 {
+                font-size: 1.5rem;
+            }
+
+            .command_list li {
+                font-size: 1.3rem;
+                padding: 12px;
+            }
+        }
+
+        /* Responsive adjustments for desktops (1024px and above) */
+        @media (min-width: 1024px) {
+            body {
+                padding: 40px;
+            }
+
+            .container {
+                max-width: 700px; /* Even wider for desktops */
+                padding: 60px;
+                box-shadow: 0 12px 48px rgba(0, 255, 149, 0.3), 0 0 30px rgba(0, 255, 149, 0.15); /* Stronger shadow for larger screens */
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            #startListening {
+                font-size: 1.6rem;
+                padding: 18px 36px;
+                max-width: 450px;
+            }
+
+            #mic_status {
+                font-size: 1.3rem;
+            }
+
+            .command_list h3 {
+                font-size: 1.8rem;
+            }
+
+            .command_list li {
+                font-size: 1.5rem;
+                padding: 15px;
+            }
+
+            /* Enhance background overlay for larger screens */
+            body::before {
+                background: radial-gradient(circle, rgba(29, 185, 84, 0.15) 0%, transparent 60%);
+            }
+        }
+
+        /* Responsive adjustments for mobile (480px and below) */
         @media (max-width: 480px) {
             .container {
                 padding: 25px;
+                max-width: 400px; /* Ensure it fits smaller screens */
             }
 
             h1 {
@@ -174,6 +249,11 @@
             #startListening {
                 font-size: 1.1rem;
                 padding: 12px 24px;
+                max-width: 100%;
+            }
+
+            #mic_status {
+                font-size: 0.9rem;
             }
 
             .command_list h3 {
@@ -182,5 +262,6 @@
 
             .command_list li {
                 font-size: 1rem;
+                padding: 8px;
             }
         }
