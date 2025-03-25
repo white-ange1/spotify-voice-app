@@ -1,92 +1,186 @@
-/* Global Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+/* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* Dark futuristic theme */
-body {
-    background: #0d0d0d;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-    text-align: center;
-}
+        /* Body styling with a vibrant gradient background */
+        body {
+            font-family: 'Montserrat', sans-serif; /* Fallback for Spotify's Circular font */
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a3c34 50%, #0a0a0a 100%); /* Richer gradient */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
 
-/* Container */
-.container {
-    max-width: 400px;
-    width: 100%;
-    background: rgba(20, 20, 20, 0.95);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 0px 10px rgba(0, 255, 135, 0.5);
-    border: 1px solid rgba(0, 255, 135, 0.3);
-}
+        /* Subtle background overlay for depth */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
 
-/* Heading */
-h1 {
-    font-size: 22px;
-    margin-bottom: 20px;
-    color: #00ff87;
-    text-shadow: 0 0 10px #00ff87;
-}
+        /* Container styling with glassmorphism effect */
+        .container {
+            background: rgba(20, 20, 20, 0.8); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 255, 149, 0.2), 0 0 20px rgba(0, 255, 149, 0.1); /* Enhanced glow */
+            border: 1px solid rgba(0, 255, 149, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
 
-/* Start Listening Button */
-button {
-    background: linear-gradient(45deg, #00ff87, #0085ff);
-    border: none;
-    color: black;
-    padding: 12px 18px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0px 0px 8px rgba(0, 255, 135, 0.6);
-}
+        /* Fade-in animation for container */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-button:hover {
-    transform: scale(1.05);
-}
+        /* Title styling */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1db954; /* Spotify green for the title */
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5); /* Subtle glow */
+        }
 
-/* Mic Status */
-#mic_status {
-    font-size: 14px;
-    margin-top: 10px;
-    color: #ccc;
-}
+        h1 .icon {
+            font-size: 1.8rem;
+        }
 
-/* Command List */
-.command_list {
-    margin-top: 20px;
-}
+        /* Button styling with glowing effect */
+        #startListening {
+            background: linear-gradient(90deg, #1db954, #17a34a); /* Gradient for vibrancy */
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 28px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5); /* Glowing effect */
+            animation: pulse 2s infinite ease-in-out;
+        }
 
-.command_list h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #00ff87;
-    text-shadow: 0 0 10px #00ff87;
-}
+        /* Pulsing animation for the button */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(29, 185, 84, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+            }
+        }
 
-.command_list ul {
-    list-style: none;
-}
+        #startListening:hover {
+            background: linear-gradient(90deg, #17a34a, #1db954); /* Reverse gradient on hover */
+            transform: scale(1.05);
+        }
 
-.command_list li {
-    font-size: 14px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 6px;
-    text-shadow: 0 0 10px rgba(0, 255, 135, 0.5);
-}
+        #startListening:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.6); /* Focus state for accessibility */
+        }
 
-.command_list li span {
-    font-weight: bold;
-    color: #00ff87;
-}
+        /* Status text */
+        #mic_status {
+            font-size: 1rem;
+            color: #b3b3b3;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Voice commands section */
+        .command_list h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .command_list ul {
+            list-style: none;
+        }
+
+        .command_list li {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+            animation: fadeIn 1s ease-out;
+            animation-delay: calc(0.1s * var(--i)); /* Staggered animation for list items */
+        }
+
+        .command_list li:hover {
+            background: rgba(29, 185, 84, 0.1); /* Subtle hover effect */
+        }
+
+        .command_list li span {
+            color: #1db954; /* Highlight command in green */
+            font-weight: 600;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            #startListening {
+                font-size: 1.1rem;
+                padding: 12px 24px;
+            }
+
+            .command_list h3 {
+                font-size: 1.2rem;
+            }
+
+            .command_list li {
+                font-size: 1rem;
+            }
+        }
