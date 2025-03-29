@@ -1,267 +1,286 @@
 /* Reset default styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* Body styling with a vibrant gradient background */
-        body {
-            font-family: 'Montserrat', sans-serif; /* Fallback for Spotify's Circular font */
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a3c34 50%, #0a0a0a 100%); /* Richer gradient */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow: hidden;
-            position: relative;
-        }
+/* Body styling with a vibrant gradient background */
+body {
+    font-family: 'Montserrat', sans-serif; /* Fallback for Spotify's Circular font */
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a3c34 50%, #0a0a0a 100%); /* Richer gradient */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+}
 
-        /* Subtle background overlay for depth */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%);
-            z-index: 0;
-        }
+/* Subtle background overlay for depth */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%);
+    z-index: 0;
+}
 
-        /* Container styling with glassmorphism effect */
-        .container {
-            background: rgba(20, 20, 20, 0.8); /* Semi-transparent dark background */
-            backdrop-filter: blur(10px); /* Glassmorphism effect */
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 400px; /* Default for mobile */
-            width: 100%;
-            box-shadow: 0 8px 32px rgba(0, 255, 149, 0.2), 0 0 20px rgba(0, 255, 149, 0.1); /* Enhanced glow */
-            border: 1px solid rgba(0, 255, 149, 0.3);
-            position: relative;
-            z-index: 1;
-            animation: fadeIn 0.8s ease-out;
-        }
+/* Container styling with glassmorphism effect */
+.container {
+    background: rgba(20, 20, 20, 0.8); /* Semi-transparent dark background */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 360px; /* Default for mobile */
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 255, 149, 0.2), 0 0 20px rgba(0, 255, 149, 0.1); /* Enhanced glow */
+    border: 1px solid rgba(0, 255, 149, 0.3);
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.8s ease-out;
+}
 
-        /* Fade-in animation for container */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* Fade-in animation for container */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        /* Title styling */
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1db954; /* Spotify green for the title */
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5); /* Subtle glow */
-        }
+/* Title styling */
+h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1db954; /* Spotify green for the title */
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 0 10px rgba(29, 185, 84, 0.5); /* Subtle glow */
+}
 
-        h1 .icon {
-            font-size: 1.8rem;
-        }
+h1 .icon {
+    font-size: 1.3rem;
+}
 
-        /* Button styling with glowing effect */
-        #startListening {
-            background: linear-gradient(90deg, #1db954, #17a34a); /* Gradient for vibrancy */
-            color: #ffffff;
-            border: none;
-            border-radius: 50px;
-            padding: 14px 28px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5); /* Glowing effect */
-            animation: pulse 2s infinite ease-in-out;
-        }
+/* Button styling with glowing effect */
+#startListening {
+    background: linear-gradient(90deg, #1db954, #17a34a); /* Gradient for vibrancy */
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.5); /* Glowing effect */
+    animation: pulse 2s infinite ease-in-out;
+}
 
-        /* Pulsing animation for the button */
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(29, 185, 84, 0.8);
-            }
-            100% {
-                box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
-            }
-        }
+/* Pulsing animation for the button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(29, 185, 84, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+    }
+}
 
-        #startListening:hover {
-            background: linear-gradient(90deg, #17a34a, #1db954); /* Reverse gradient on hover */
-            transform: scale(1.05);
-        }
+#startListening:hover {
+    background: linear-gradient(90deg, #17a34a, #1db954); /* Reverse gradient on hover */
+    transform: scale(1.05);
+}
 
-        #startListening:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.6); /* Focus state for accessibility */
-        }
+#startListening:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.6); /* Focus state for accessibility */
+}
 
-        /* Status text */
-        #mic_status {
-            font-size: 1rem;
-            color: #b3b3b3;
-            margin-bottom: 25px;
-            text-align: center;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-        }
+/* Status text */
+#mic_status {
+    font-size: 0.85rem;
+    color: #b3b3b3;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
 
-        /* Voice commands section */
-        .command_list h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-        }
+/* Voice commands section */
+.command_list h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 16px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
 
-        .command_list ul {
-            list-style: none;
-        }
+.command_list ul {
+    list-style: none;
+}
 
-        .command_list li {
-            font-size: 1.1rem;
-            color: #e0e0e0;
-            margin-bottom: 15px;
-            line-height: 1.6;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-            animation: fadeIn 1s ease-out;
-            animation-delay: calc(0.1s * var(--i)); /* Staggered animation for list items */
-        }
+.command_list li {
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    animation: fadeIn 1s ease-out;
+    animation-delay: calc(0.1s * var(--i)); /* Staggered animation for list items */
+}
 
-        .command_list li:hover {
-            background: rgba(29, 185, 84, 0.1); /* Subtle hover effect */
-        }
+.command_list li:hover {
+    background: rgba(29, 185, 84, 0.1); /* Subtle hover effect */
+}
 
-        .command_list li span {
-            color: #1db954; /* Highlight command in green */
-            font-weight: 600;
-        }
+.command_list li span {
+    color: #1db954; /* Highlight command in green */
+    font-weight: 600;
+}
 
-        /* Responsive adjustments for tablets (768px and above) */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 600px; /* Wider container for tablets */
-                padding: 50px;
-            }
+/* Responsive adjustments for tablets (768px and above) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 420px; /* Wider container for tablets */
+        padding: 28px;
+    }
 
-            h1 {
-                font-size: 2.5rem;
-            }
+    h1 {
+        font-size: 1.7rem;
+    }
 
-            #startListening {
-                font-size: 1.4rem;
-                padding: 16px 32px;
-                max-width: 400px; /* Prevent button from stretching too wide */
-                margin-left: auto;
-                margin-right: auto;
-            }
+    #startListening {
+        font-size: 1rem;
+        padding: 12px 26px;
+        max-width: 300px; /* Prevent button from stretching too wide */
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-            #mic_status {
-                font-size: 1.2rem;
-            }
+    #mic_status {
+        font-size: 0.9rem;
+    }
 
-            .command_list h3 {
-                font-size: 1.5rem;
-            }
+    .command_list h3 {
+        font-size: 1.1rem;
+    }
 
-            .command_list li {
-                font-size: 1.3rem;
-                padding: 12px;
-            }
-        }
+    .command_list li {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+}
 
-        /* Responsive adjustments for desktops (1024px and above) */
-        @media (min-width: 1024px) {
-            body {
-                padding: 40px;
-            }
+/* Responsive adjustments for desktops (1024px and above) */
+@media (min-width: 1024px) {
+    body {
+        padding: 20px;
+    }
 
-            .container {
-                max-width: 700px; /* Even wider for desktops */
-                padding: 60px;
-                box-shadow: 0 12px 48px rgba(0, 255, 149, 0.3), 0 0 30px rgba(0, 255, 149, 0.15); /* Stronger shadow for larger screens */
-            }
+    .container {
+        max-width: 480px; /* Approximately 60% of original 700px */
+        padding: 32px;
+        box-shadow: 0 12px 48px rgba(0, 255, 149, 0.3), 0 0 30px rgba(0, 255, 149, 0.15);
+    }
 
-            h1 {
-                font-size: 3rem;
-            }
+    h1 {
+        font-size: 1.8rem; /* Approximately 60% of original 3rem */
+    }
 
-            #startListening {
-                font-size: 1.6rem;
-                padding: 18px 36px;
-                max-width: 450px;
-            }
+    #startListening {
+        font-size: 1rem; /* Approximately 60% of original 1.6rem */
+        padding: 14px 28px;
+        max-width: 300px;
+    }
 
-            #mic_status {
-                font-size: 1.3rem;
-            }
+    #mic_status {
+        font-size: 0.95rem; /* Approximately 60% of original */
+    }
 
-            .command_list h3 {
-                font-size: 1.8rem;
-            }
+    .command_list h3 {
+        font-size: 1.1rem; /* Approximately 60% of original 1.8rem */
+    }
 
-            .command_list li {
-                font-size: 1.5rem;
-                padding: 15px;
-            }
+    .command_list li {
+        font-size: 0.95rem; /* Approximately 60% of original 1.5rem */
+        padding: 10px;
+        margin-bottom: 10px;
+    }
 
-            /* Enhance background overlay for larger screens */
-            body::before {
-                background: radial-gradient(circle, rgba(29, 185, 84, 0.15) 0%, transparent 60%);
-            }
-        }
+    /* Enhance background overlay for larger screens */
+    body::before {
+        background: radial-gradient(circle, rgba(29, 185, 84, 0.15) 0%, transparent 60%);
+    }
+}
 
-        /* Responsive adjustments for mobile (480px and below) */
-        @media (max-width: 480px) {
-            .container {
-                padding: 25px;
-                max-width: 400px; /* Ensure it fits smaller screens */
-            }
+/* Responsive adjustments for large desktops (1440px and above) */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 520px; /* Slightly wider for very large screens */
+    }
 
-            h1 {
-                font-size: 1.6rem;
-            }
+    /* Use a two-column layout for larger screens */
+    .command_list ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
 
-            #startListening {
-                font-size: 1.1rem;
-                padding: 12px 24px;
-                max-width: 100%;
-            }
+    .command_list li {
+        margin-bottom: 0;
+    }
+}
 
-            #mic_status {
-                font-size: 0.9rem;
-            }
+/* Responsive adjustments for mobile (480px and below) */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        max-width: 330px; /* Ensure it fits smaller screens */
+    }
 
-            .command_list h3 {
-                font-size: 1.2rem;
-            }
+    h1 {
+        font-size: 1.4rem;
+    }
 
-            .command_list li {
-                font-size: 1rem;
-                padding: 8px;
-            }
-        }
+    #startListening {
+        font-size: 0.95rem;
+        padding: 10px 20px;
+        max-width: 100%;
+    }
+
+    #mic_status {
+        font-size: 0.8rem;
+    }
+
+    .command_list h3 {
+        font-size: 1rem;
+    }
+
+    .command_list li {
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+}
