@@ -296,10 +296,5 @@ def log_response_info(response):
 # This middleware logs response information for debugging
 
 if __name__ == "__main__":
-    print("🚀 Starting Spotify Voice Control App")
-    initialize_tokens()
-    print("Visit: http://localhost:8080 to authenticate with Spotify")
-    print("Visit: http://localhost:8080/voice for voice control interface")
-    
-    app.run(host="0.0.0.0", port=8080, debug=True)
-# The app runs on port 8080 with debug mode enabled
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
